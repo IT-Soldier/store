@@ -24,6 +24,10 @@ module.exports = {
     // allow async-await
     'generator-star-spacing': 'off',
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    // 我自行设定每句代码结束都要带分号
+    'semi': ['error', 'always'],
+    //我不希望函数名与()之间有空格
+    'space-before-function-paren': 'off'
   }
 }
