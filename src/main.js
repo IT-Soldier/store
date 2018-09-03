@@ -7,6 +7,7 @@ import router from './router';
 import ElementUI from 'element-ui';
 // 所以相应的css样式也务必引入
 import 'element-ui/lib/theme-chalk/index.css';
+import '@/assets/css/index.css'
 
 Vue.config.productionTip = false;
 
