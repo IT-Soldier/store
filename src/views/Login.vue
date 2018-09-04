@@ -17,10 +17,10 @@
 export default {
   data() {
     return {
-      labelPosition: 'top',
+      labelPosition: 'top'
     };
   }
-}
+};
 </script>
 
 <style>

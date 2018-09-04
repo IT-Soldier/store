@@ -7,9 +7,11 @@ import router from './router';
 import ElementUI from 'element-ui';
 // 所以相应的css样式也务必引入
 import 'element-ui/lib/theme-chalk/index.css';
-import '@/assets/css/index.css'
-
+import '@/assets/css/index.css';
+//Vue.configproductionTip干掉了控制台的一些有关代码生产模式的一些提醒,自己生成的
 Vue.config.productionTip = false;
+
+
 
 // ElementUI为插件,当然要先注册后,全局使用
 Vue.use(ElementUI);
