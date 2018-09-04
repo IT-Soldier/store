@@ -3,10 +3,10 @@
   <el-form class="login-form" :label-position="labelPosition" label-width="80px">
     <h2>用户登录</h2>
     <el-form-item class="login-item" label="用户名">
-      <el-input type="text"></el-input>
+      <el-input type="text" v-model="formData.username"></el-input>
     </el-form-item>
     <el-form-item class="login-item" label="密码">
-      <el-input type="password"></el-input>
+      <el-input type="password" v-model="formData.password"></el-input>
     </el-form-item>
     <el-button class="login-button" type="primary" @click="handleLogin">登录按钮</el-button>
   </el-form>
@@ -17,11 +17,32 @@
 export default {
   data() {
     return {
-      labelPosition: 'top'
+      labelPosition: 'top',
+      asd: '',
+      formData: {
+        // 要绑定的参数名设定时,务必参照接口文件
+        username: '',
+        password: ''
+      }
     };
   },
   methods: {
     handleLogin() {
+      this.$http
+        .post('login', this.formData)
+        .then(response => {
+          // 是否登录成功的信息是包含在response.data中的
+          // 使用对象解构所需参数
+          let {msg, status} = response.data.meta;
+          if (status === 200) {
+            console.log(response.data);
+          } else {
+            console.log(msg);
+          }
+        })
+        .catch(error => (
+          console.log(error)
+        ));
     }
   }
 };
