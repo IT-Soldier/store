@@ -8,7 +8,7 @@
     <el-form-item class="login-item" label="密码">
       <el-input type="password"></el-input>
     </el-form-item>
-    <el-button class="login-button" type="primary">登录按钮</el-button>
+    <el-button class="login-button" type="primary" @click="handleLogin">登录按钮</el-button>
   </el-form>
 </div>
 </template>
@@ -19,6 +19,10 @@ export default {
     return {
       labelPosition: 'top'
     };
+  },
+  methods: {
+    handleLogin() {
+    }
   }
 };
 </script>
