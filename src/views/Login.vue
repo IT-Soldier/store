@@ -52,8 +52,14 @@ export default {
           // 是否登录成功的信息是包含在response.data中的
           // 使用对象解构所需参数
           let {msg, status} = response.data.meta;
+          let {token} = response.data.data;
           if (status === 200) {
-            // console.log(response.data);
+            //用sessionStorage来保存token,token会被保存在运行内存中
+            // 为什么没有使用cookie?
+            // 使用sessionStorage,那么项目页面在一个新窗口打开或者关闭浏览器重新打开就会消失
+            // 本次不使用cookie,似乎没有什么特别的理由,只是cookie的设置相对麻烦
+            sessionStorage.setItem('token', token);
+            console.log(response.data);
             // 提供的消息框,由element-ui提供
             this.$message.success(msg);
             // 使用的是$router.push, 而不是文档中router.push,
