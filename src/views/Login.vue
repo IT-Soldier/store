@@ -36,6 +36,10 @@ export default {
           let {msg, status} = response.data.meta;
           if (status === 200) {
             console.log(response.data);
+            // 使用的是$router.push, 而不是文档中router.push,
+            // 是因为router插件为了全局使用, webpack已经暗中在vue中注册了router插件
+            // 所以用法同axios的封装使用
+            this.$router.push('/Home');
           } else {
             console.log(msg);
           }
