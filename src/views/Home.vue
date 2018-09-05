@@ -11,7 +11,7 @@
 <script>
 export default {
 
-}
+};
 </script>
 
 <style>
@@ -21,14 +21,14 @@ export default {
     text-align: center;
     line-height: 60px;
   }
-  
+
   .el-aside {
     background-color: #D3DCE6;
     color: #333;
     text-align: center;
     height: 100%;
   }
-  
+
   .el-main {
     background-color: #E9EEF3;
     color: #333;
