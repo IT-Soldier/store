@@ -1,16 +1,20 @@
 <template>
 <div class="login-wrap">
-  <el-form class="login-form" :label-position="labelPosition" label-width="80px">
+  <el-form 
+  :label-position="labelPosition"
+  class="login-form"
+  :model="ruleForm"
+  :rules="rules"
+  label-width="80px">
     <h2>用户登录</h2>
-    <el-form-item class="login-item" label="用户名">
-      <el-input type="text" v-model="formData.username"></el-input>
+    <el-form-item type="text" class="login-item" label="用户名" prop="username">
+      <el-input v-model="ruleForm.username"></el-input>
     </el-form-item>
-    <el-form-item class="login-item" label="密码">
-      <el-input type="password" v-model="formData.password"></el-input>
+    <el-form-item label="密码" prop="password">
+      <el-input type="password" v-model="ruleForm.password"></el-input>
     </el-form-item>
     <el-button class="login-button" type="primary" @click="handleLogin">登录按钮</el-button>
   </el-form>
-  
 </div>
 </template>
 
@@ -18,19 +22,29 @@
 export default {
   data() {
     return {
-      labelPosition: 'top',
-      asd: '',
-      formData: {
-        // 要绑定的参数名设定时,务必参照接口文件
+      // 由于要使用表单验证功能,所以数据发生了一些变化,formData的功能被ruleForm替代
+      ruleForm: {
         username: '',
         password: ''
-      }
+      },
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 11, message: '长度在 6 到 11 个字符', trigger: 'blur' }
+        ],
+      },
+      labelPosition: 'top',
+      asd: ''
     };
   },
   methods: {
     handleLogin() {
       this.$http
-        .post('login', this.formData)
+        .post('login', this.ruleForm)
         .then(response => {
           // 是否登录成功的信息是包含在response.data中的
           // 使用对象解构所需参数
