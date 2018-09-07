@@ -1,7 +1,12 @@
 <template>
   <el-container>
-    <el-header>Header
-      <a href="javascript:;" @click.prevent="logout">退出</a>
+    <el-header>
+      <el-row :gutter="20">
+        <!-- 标签内,比如图片使用的是绝对路径,根路径为src文件夹 -->
+      <el-col :span="4"><img src="/static/logo.png"></el-col>
+      <el-col :span="18" class="title">电商后台管理系统</el-col>
+      <el-col :span="2"><a class="logout" href="javascript:;" @click.prevent="logout">退出</a></el-col>
+      </el-row>
     </el-header>
     <el-container>
       <el-aside width="200px">Aside</el-aside>
@@ -53,6 +58,7 @@ export default {
     color: #333;
     text-align: center;
     line-height: 60px;
+    padding: 0;
   }
 
   .el-aside {
@@ -70,5 +76,13 @@ export default {
   }
   .el-container {
     height: 100%;
+  }
+  .title {
+    color: #fff;
+    font-size: 24px;
+  }
+  .logout {
+    text-decoration: none;
+    color: orange;
   }
 </style>
