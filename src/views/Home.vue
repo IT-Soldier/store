@@ -19,9 +19,10 @@
             <el-menu
               router
               unique-opened
+              active-text-color="#ffd04b"
               class="el-menu-vertical-demo">
               <!-- el-submenu在页面中是菜单 -->
-              <el-submenu index="1">
+              <el-submenu index="0">
                 <!-- 在向具名插槽提供内容的时候，我们可以在一个父组件的 <template> 元素上使用 slot 特性(--vue,具名插槽) -->
                 <!-- 在模板中通过具名slot,title也不可以修改,框架内置的,才使得模板内容正常显示 -->
                 <template slot="title">
@@ -39,7 +40,7 @@
                   <i class="el-icon-location"></i>
                   <span>权限管理</span>
                 </template>
-                
+
                   <el-menu-item index="2-1">
                     <i class="el-icon-document"></i>角色列表
                   </el-menu-item>
