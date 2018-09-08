@@ -3,6 +3,8 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+// 专门用来处理时间格式
+import moment from 'moment';
 // 所有的组件均基于element-ui,所以必须引入
 import ElementUI from 'element-ui';
 // 所以相应的css样式也务必引入
@@ -17,7 +19,12 @@ Vue.use(MyHttp);
 
 // ElementUI为插件,当然要先注册后,全局使用
 Vue.use(ElementUI);
-
+// 全局注册过滤器,第1个参数为模板中用的格式函数
+// value为管道符号前面的值,是要处理的数据,会自动传入,不用刻意传值
+// formatStr是要时间最后被处理成的形式,是需要在模板中传入的
+Vue.filter('format',(value,formatStr) => {
+  return moment(value).format(formatStr);
+})
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -9,8 +9,17 @@
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin-top: 15px;">
-      <el-input placeholder="请输入内容" class="input-with-select">
-        <el-button slot="append" icon="el-icon-search"></el-button>
+      <!-- clearable使得输入框可以被清除 -->
+      <el-input
+      clearable
+      placeholder="请输入内容"
+      class="input-with-select"
+      v-model="query">
+        <!-- slot="append"使得搜索按钮存在 -->
+        <el-button
+        slot="append"
+        icon="el-icon-search"
+        @click="handelQuery"></el-button>
       </el-input>
       <el-button type="success" plain>添加用户</el-button>
     </div>
@@ -51,13 +60,19 @@
       <el-table-column
         label="时间">
         <template slot-scope="scope">
-          <span>{{ scope.row.create_time }}</span>
+          <!-- 时间格式处理详情参见main.js -->
+          <span>{{ scope.row.create_time | format('YYYY-MM-DD') }}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="用户状态">
+        <!-- scope.row除了可以在模板中使用,还可以在行内属性上使用 -->
         <template slot-scope="scope">
-          <span>{{ scope.row.create_time }}</span>
+          <el-switch
+          v-model="scope.row.mg_state"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -85,19 +100,34 @@ export default {
   data() {
     return {
       tableData: [],
-      currentPage4: 4
+      query: '',
+      currentPage4: 4,
     };
   },
   methods: {
-    test() {
-      console.log('测试专用');
-    },
     loadData() {
       // 若没有token封装到请求头中,请求必然失败
       let token = sessionStorage.getItem('token');
       this.$http.defaults.headers.common['Authorization'] = token;
       this.$http
         .get(`users?pagenum=1&pagesize=5`)
+        .then(response => {
+          if(response.status === 200) {
+            console.log(response);
+            this.tableData = response.data.data.users;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    // 查询功能,查询的是username
+    handelQuery() {
+      // 若没有token封装到请求头中,请求必然失败
+      let token = sessionStorage.getItem('token');
+      this.$http.defaults.headers.common['Authorization'] = token;
+      this.$http
+        .get(`users?pagenum=1&pagesize=5&query=${this.query}`)
         .then(response => {
           if(response.status === 200) {
             console.log(response);
