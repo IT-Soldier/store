@@ -1,5 +1,5 @@
 <template>
-  <el-card 
+  <el-card
   class="box-card"
    shadow="hover">
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -19,44 +19,51 @@
     用label属性来定义表格的列名。
     可以使用width属性来定义列宽。 -->
     <!-- :data="tableData"绑定data中的数据 -->
+    <!-- border加边框 -->
+    <!-- lebal-width设置所有列的宽度 -->
     <el-table
     border
     :data="tableData"
+    lebal-width="50px"
     style="width: 100%;">
     <!-- 如果需要显示索引，可以增加一列el-table-column，设置type属性为index即可显示从 1 开始的索引号。 -->
-      <el-table-column
-        type="index"
-        width="50">
+      <el-table-column type="index">
       </el-table-column>
       <el-table-column
-        label="日期"
-        width="180">
+        label="姓名">
+        <!-- 通过 Scoped slot 可以获取到 row, column, $index 和 store（table 内部的状态管理）的数据 -->
         <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.date }}</span>
+          <span>{{ scope.row.username }}</span>
         </template>
       </el-table-column>
       <el-table-column
-        label="姓名"
-        width="180">
+        label="邮箱">
         <template slot-scope="scope">
-          <el-popover trigger="hover" placement="top">
-            <p>姓名: {{ scope.row.name }}</p>
-            <p>住址: {{ scope.row.address }}</p>
-            <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{ scope.row.name }}</el-tag>
-            </div>
-          </el-popover>
+          <span>{{ scope.row.email }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column 
+      label="电话">
+        <template slot-scope="scope">
+          <span>{{ scope.row.mobile }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.create_time }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="用户状态">
+        <template slot-scope="scope">
+          <span>{{ scope.row.create_time }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            >编辑</el-button>
-          <el-button
-            size="mini"
-            type="danger">删除</el-button>
+          <el-button size="mini">编辑</el-button>
+          <el-button size="mini" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,28 +73,39 @@
 <script>
 export default {
   data() {
-      return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
-      }
+    return {
+      tableData: []
+    };
+  },
+  methods: {
+    test() {
+      console.log('测试专用');
+    },
+    loadData() {
+      // 若没有token封装到请求头中,请求必然失败
+      let token = sessionStorage.getItem('token');
+      this.$http.defaults.headers.common['Authorization'] = token;
+      this.$http
+        .get(`users?pagenum=1&pagesize=5`)
+        .then(response => {
+          if(response.status === 200) {
+            console.log(response);
+            this.tableData = response.data.data.users;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
+  },
+  // beforeCreate() {
+  //   // 此处最愚蠢的是最早可以使用数据和方法的时候是created的时候
+  // }
+  mounted() {
+    this.loadData();
+  }
 
-}
+};
 </script>
 
 <style>
@@ -101,4 +119,5 @@ export default {
 .el-main {
   text-align: left;
 }
+
 </style>

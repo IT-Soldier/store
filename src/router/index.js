@@ -1,3 +1,4 @@
+// 运行代码 npm run lintfix 类似npm run dev
 import Vue from 'vue';
 import Router from 'vue-router';
 import Login from '@/views/Login.vue';
@@ -25,7 +26,7 @@ export default new Router({
         {
           name: 'User',
           path: '/User',
-          component: User,
+          component: User
         }
       ]
     }
