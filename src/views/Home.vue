@@ -15,7 +15,9 @@
         <el-row>
           <el-col>
             <!-- unique-opened 只展开一个子菜单 -->
+            <!-- router:是否使用 vue-router 的模式，启用该模式会在激活导航时以 index 作为 path 进行路由跳转 -->
             <el-menu
+              router
               unique-opened
               class="el-menu-vertical-demo">
               <!-- el-submenu在页面中是菜单 -->
@@ -27,7 +29,8 @@
                   <span>用户管理</span>
                 </template>
                   <!-- el-menu-item在页面中是菜单项 -->
-                  <el-menu-item index="1-1">
+                  <!-- router被使用以 index 作为 path 进行路由跳转 -->
+                  <el-menu-item index="/User">
                     <i class="el-icon-document"></i>用户列表
                   </el-menu-item>
               </el-submenu>
@@ -36,6 +39,7 @@
                   <i class="el-icon-location"></i>
                   <span>权限管理</span>
                 </template>
+                
                   <el-menu-item index="2-1">
                     <i class="el-icon-document"></i>角色列表
                   </el-menu-item>
@@ -63,7 +67,9 @@
         </el-row>
       </el-aside>
       <!-- 主内容区 -->
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
