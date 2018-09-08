@@ -67,6 +67,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+    class="fenye"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
   </el-card>
 </template>
 
@@ -74,7 +84,8 @@
 export default {
   data() {
     return {
-      tableData: []
+      tableData: [],
+      currentPage4: 4
     };
   },
   methods: {
@@ -96,6 +107,12 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   },
   // beforeCreate() {
@@ -111,6 +128,8 @@ export default {
 <style>
 .box-card {
   height: 100%;
+  /* card高度不够,默认是hidden */
+  overflow: auto;
 }
 .el-input {
   width: 400px;
@@ -119,5 +138,11 @@ export default {
 .el-main {
   text-align: left;
 }
-
+.fenye {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+.el-pagination__jump {
+  margin-top: -10px;
+}
 </style>
