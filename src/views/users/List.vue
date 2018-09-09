@@ -31,11 +31,11 @@
     <!-- border加边框 -->
     <!-- lebal-width设置所有列的宽度 -->
     <el-table
-    border
-    :data="tableData"
-    lebal-width="50px"
-    style="width: 100%;">
-    <!-- 如果需要显示索引，可以增加一列el-table-column，设置type属性为index即可显示从 1 开始的索引号。 -->
+      border
+      :data="tableData"
+      lebal-width="50px"
+      style="width: 100%;">
+      <!-- 如果需要显示索引，可以增加一列el-table-column，设置type属性为index即可显示从 1 开始的索引号。 -->
       <el-table-column type="index">
       </el-table-column>
       <el-table-column
@@ -51,7 +51,7 @@
           <span>{{ scope.row.email }}</span>
         </template>
       </el-table-column>
-      <el-table-column 
+      <el-table-column
       label="电话">
         <template slot-scope="scope">
           <span>{{ scope.row.mobile }}</span>
@@ -64,8 +64,7 @@
           <span>{{ scope.row.create_time | format('YYYY-MM-DD') }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        label="用户状态">
+      <el-table-column label="用户状态" width="100">
         <!-- scope.row除了可以在模板中使用,还可以在行内属性上使用 -->
         <template slot-scope="scope">
           <el-switch
@@ -75,15 +74,17 @@
         </el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button size="mini">编辑</el-button>
-          <el-button size="mini" type="danger">删除</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-edit" plain></el-button>
+          <el-button size="mini" type="success" icon="el-icon-check" plain></el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete" plain
+          @click="handelDelele(scope.row.id)"></el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
-    class="fenye"
+      class="fenye"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage4"
@@ -101,7 +102,7 @@ export default {
     return {
       tableData: [],
       query: '',
-      currentPage4: 4,
+      currentPage4: 4
     };
   },
   methods: {
@@ -110,10 +111,9 @@ export default {
       let token = sessionStorage.getItem('token');
       this.$http.defaults.headers.common['Authorization'] = token;
       this.$http
-        .get(`users?pagenum=1&pagesize=5`)
+        .get(`users?pagenum=1&pagesize=7`)
         .then(response => {
-          if(response.status === 200) {
-            console.log(response);
+          if (response.status === 200) {
             this.tableData = response.data.data.users;
           }
         })
@@ -129,14 +129,46 @@ export default {
       this.$http
         .get(`users?pagenum=1&pagesize=5&query=${this.query}`)
         .then(response => {
-          if(response.status === 200) {
-            console.log(response);
+          if (response.status === 200) {
             this.tableData = response.data.data.users;
           }
         })
         .catch(error => {
           console.log(error);
         });
+    },
+    handelDelele(id) {
+      this.$confirm('是否确认删除该条数据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 若没有token封装到请求头中,请求必然失败
+        let token = sessionStorage.getItem('token');
+        this.$http.defaults.headers.common['Authorization'] = token;
+        this.$http
+          .delete(`users/${id}`)
+          .then(response => {
+            if (response.status === 200) {
+              this.$message.success('删除成功');
+              // 重新加载数据
+              this.loadData();
+            }
+          })
+          .catch(error => {
+            this.$message.error(error);
+          });
+
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);

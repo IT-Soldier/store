@@ -11,21 +11,21 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/Home'
+      redirect: '/home'
     },
     {
-      name: 'Login',
-      path: '/Login',
+      name: 'login',
+      path: '/login',
       component: Login
     },
     {
-      name: 'Home',
-      path: '/Home',
+      name: 'home',
+      path: '/home',
       component: Home,
       children: [
         {
-          name: 'User',
-          path: '/User',
+          name: 'user',
+          path: '/user',
           component: User
         }
       ]

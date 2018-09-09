@@ -31,7 +31,7 @@
                 </template>
                   <!-- el-menu-item在页面中是菜单项 -->
                   <!-- router被使用以 index 作为 path 进行路由跳转 -->
-                  <el-menu-item index="/User">
+                  <el-menu-item index="/user">
                     <i class="el-icon-document"></i>用户列表
                   </el-menu-item>
               </el-submenu>
@@ -83,7 +83,7 @@ export default {
     if (!token) {
     // 仅仅验证了token是否存在,若有token,即使不正确也可以看到Home页面,但是无数据渲染,
     // 前端的验证强度已经足够
-      this.$router.push('/Login');
+      this.$router.push('/login');
       this.$message.warning('请登录后访问页面!');
     }
   },
@@ -98,7 +98,7 @@ export default {
         // 清空sessionStorage的token
         sessionStorage.removeItem('token');
         // 跳转到登录页,并提醒登录
-        this.$router.push('/Login');
+        this.$router.push('/login');
         this.dialogVisible = false;
         this.$message.success('您已经成功退出!');
       }).catch(() => {

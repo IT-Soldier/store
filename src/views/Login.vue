@@ -80,7 +80,7 @@ export default {
               // 使用的是$router.push, 而不是文档中router.push,
               // 是因为router插件为了全局使用, webpack已经暗中在vue中注册了router插件
               // 所以用法同axios的封装使用,它叫编程导航
-              this.$router.push('/Home');
+              this.$router.push('/home');
             } else {
               this.$message.error(msg);
             }
