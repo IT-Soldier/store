@@ -113,8 +113,11 @@ export default {
       this.$http
         .get(`users?pagenum=1&pagesize=7`)
         .then(response => {
-          if (response.status === 200) {
+          const {msg, status} = response.data.meta;
+          if (status === 200) {
             this.tableData = response.data.data.users;
+          } else {
+            this.$message.error(msg);
           }
         })
         .catch(error => {
@@ -129,14 +132,18 @@ export default {
       this.$http
         .get(`users?pagenum=1&pagesize=5&query=${this.query}`)
         .then(response => {
-          if (response.status === 200) {
+          const {msg, status} = response.data.meta;
+          if (status === 200) {
             this.tableData = response.data.data.users;
+          } else {
+            this.$message.error(msg);
           }
         })
         .catch(error => {
           console.log(error);
         });
     },
+    // 删除功能
     handelDelele(id) {
       this.$confirm('是否确认删除该条数据?', '提示', {
         confirmButtonText: '确定',
@@ -149,20 +156,18 @@ export default {
         this.$http
           .delete(`users/${id}`)
           .then(response => {
-            if (response.status === 200) {
+            const {msg, status} = response.data.meta;
+            if (status === 200) {
               this.$message.success('删除成功');
               // 重新加载数据
               this.loadData();
+            } else {
+              this.$message.error(msg);
             }
           })
           .catch(error => {
             this.$message.error(error);
           });
-
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
       }).catch(() => {
         this.$message({
           type: 'info',
