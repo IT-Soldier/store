@@ -69,11 +69,13 @@
           <span>{{ scope.row.create_time | format('YYYY-MM-DD') }}</span>
         </template>
       </el-table-column>
+      <!-- change switch 状态发生变化时的回调函数,应该绑定在switch上 -->
       <el-table-column label="用户状态" width="100">
         <!-- scope.row除了可以在模板中使用,还可以在行内属性上使用 -->
         <template slot-scope="scope">
           <el-switch
           v-model="scope.row.mg_state"
+          @change="stateChange(scope.row)"
           active-color="#13ce66"
           inactive-color="#ff4949">
         </el-switch>
@@ -245,6 +247,7 @@ export default {
     };
   },
   methods: {
+    // 加载用户信息
     async loadData() {
       // 若没有token封装到请求头中,请求必然失败
       let token = sessionStorage.getItem('token');
@@ -254,7 +257,6 @@ export default {
       const {msg, status} = response.data.meta;
       const {total} = response.data.data;
       // 接口文档有误,应为total
-      console.log(total);
       if (status === 200) {
         this.tableData = response.data.data.users;
         // 用户信息总条数
@@ -431,6 +433,7 @@ export default {
       // 根据用户id去获取对应的角色id,去选中角色名称
       this.currentRoleId = rid;
     },
+    // pagesize变化时触发事件
     handleSizeChange(val) {
       // 当不在第一页时,点击当前显示页数,回车时,应跳转到第一页
       if(this.pagenum !== 1) {
@@ -441,12 +444,23 @@ export default {
       this.pagesize = val - 0;
       this.loadData();
     },
+    // pagenum变化时触发的事件
     handleCurrentChange(val) {
       // 此处的val对应的是current-page的值
       // console.log(`当前页: ${val}`);
       // val是字符串,pagenum需要的是数字
       this.pagenum = val - 0;
       this.loadData();
+    },
+    // 修改用户状态功能
+    async stateChange(row) {
+      const response = await this.$http.put(`users/${row.id}/state/${row.mg_state}`);
+      const {msg, status} = response.data.meta;
+      if(status === 200) {
+        this.$message.success('用户状态修改成功!');
+      } else {
+        this.$message.error(msg);
+      }
     }
   },
   // beforeCreate() {
@@ -471,6 +485,7 @@ export default {
 }
 .el-main {
   text-align: left;
+  overflow: hidden;
 }
 .fenye {
   margin-top: 10px;
