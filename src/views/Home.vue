@@ -22,45 +22,25 @@
               active-text-color="#ffd04b"
               class="el-menu-vertical-demo">
               <!-- el-submenu在页面中是菜单 -->
-              <el-submenu index="0">
+              <el-submenu
+              v-for="level1 in option"
+              :key="level1.id"
+              :index="level1.path">
                 <!-- 在向具名插槽提供内容的时候，我们可以在一个父组件的 <template> 元素上使用 slot 特性(--vue,具名插槽) -->
                 <!-- 在模板中通过具名slot,title也不可以修改,框架内置的,才使得模板内容正常显示 -->
                 <template slot="title">
                   <i class="el-icon-location"></i>
-                  <span>用户管理</span>
+                  <span>{{level1.authName}}</span>
                 </template>
                   <!-- el-menu-item在页面中是菜单项 -->
                   <!-- router被使用以 index 作为 path 进行路由跳转 -->
-                  <el-menu-item index="/user">
-                    <i class="el-icon-document"></i>用户列表
-                  </el-menu-item>
-              </el-submenu>
-              <el-submenu index="2">
-                <template slot="title">
-                  <i class="el-icon-location"></i>
-                  <span>权限管理</span>
-                </template>
-
-                  <el-menu-item index="2-1">
-                    <i class="el-icon-document"></i>角色列表
-                  </el-menu-item>
-                  <el-menu-item index="2-2">
-                    <i class="el-icon-document"></i>权限列表
-                  </el-menu-item>
-              </el-submenu>
-              <el-submenu index="3">
-                <template slot="title">
-                  <i class="el-icon-location"></i>
-                  <span>商品管理</span>
-                </template>
-                  <el-menu-item index="3-1">
-                    <i class="el-icon-document"></i>商品列表
-                  </el-menu-item>
-                  <el-menu-item index="3-2">
-                    <i class="el-icon-document"></i>分类参数
-                  </el-menu-item>
-                  <el-menu-item index="3-3">
-                    <i class="el-icon-document"></i>商品分类
+                  <!-- index命名路由,此处进行了字符串的拼接,主要是因为/的存在 -->
+                  <el-menu-item
+                  v-for="level2 in level1.children"
+                  :key="level2.id"
+                  :index="'/' + level2.path">
+                    <i class="el-icon-document"></i>
+                    {{level2.authName}}
                   </el-menu-item>
               </el-submenu>
             </el-menu>
@@ -77,14 +57,9 @@
 
 <script>
 export default {
-  beforeCreate() {
-    // 在页面加载前,就进行token的验证,效果类似axios的同步请求
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-    // 仅仅验证了token是否存在,若有token,即使不正确也可以看到Home页面,但是无数据渲染,
-    // 前端的验证强度已经足够
-      this.$router.push('/login');
-      this.$message.warning('请登录后访问页面!');
+  data() {
+    return {
+      option: []
     }
   },
   methods: {
@@ -107,7 +82,26 @@ export default {
           message: '已取消退出登录'
         });
       });
+    },
+    async loadData() {
+      const response = await this.$http.get('menus');
+      console.log(response.data.data);
+      this.option = response.data.data;
+      console.log(this.option);
     }
+  },
+  beforeCreate() {
+    // 在页面加载前,就进行token的验证,效果类似axios的同步请求
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+    // 仅仅验证了token是否存在,若有token,即使不正确也可以看到Home页面,但是无数据渲染,
+    // 前端的验证强度已经足够
+      this.$router.push('/login');
+      this.$message.warning('请登录后访问页面!');
+    }
+  },
+  mounted() {
+    this.loadData();
   }
 };
 </script>
