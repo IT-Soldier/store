@@ -11,9 +11,14 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/css/index.css';
 import MyHttp from '@/plugins/MyHttp';
+// 引入面包屑组件,以供全局使用
+import Breadcrumb from '@/component/Breadcrumb';
 // Vue.configproductionTip干掉了控制台的一些有关代码生产模式的一些提醒,自己生成的
 Vue.config.productionTip = false;
-
+// 全局注册面包屑组件
+Vue.component(
+  Breadcrumb.name, Breadcrumb
+);
 // 注册axios插件
 Vue.use(MyHttp);
 

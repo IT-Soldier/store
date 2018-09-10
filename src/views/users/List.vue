@@ -2,12 +2,14 @@
   <el-card
   class="box-card"
    shadow="hover">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
       <!-- 相当于link-to标签,路由中的跳转 -->
+    <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/Home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    </el-breadcrumb> -->
+    <!-- 面包屑组件已经被封装 -->
+    <my-breadcrumb></my-breadcrumb>
     <!-- 搜索框部分 -->
     <div style="margin-top: 15px;">
       <!-- clearable使得输入框可以被清除 -->
