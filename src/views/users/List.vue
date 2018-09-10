@@ -8,6 +8,7 @@
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
+    <!-- 搜索框部分 -->
     <div style="margin-top: 15px;">
       <!-- clearable使得输入框可以被清除 -->
       <el-input
@@ -193,15 +194,17 @@
       </div>
     </el-dialog>
     <!-- 分页导航 -->
+    <!-- layout控制是分页功能是否完整 -->
+    <!-- 其余的功能就是英语字面的翻译 -->
     <el-pagination
       class="fenye"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="pagenum"
+      :page-sizes="[2, 3, 4, 5]"
+      :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="total">
     </el-pagination>
   </el-card>
 </template>
@@ -212,7 +215,9 @@ export default {
     return {
       tableData: [],
       query: '',
-      currentPage4: 4,
+      pagenum: 1,
+      pagesize: 4,
+      total: 0,
       dialogAddFormVisible: false,
       dialogEditFormVisible: false,
       dialogRoleFormVisible: false,
@@ -240,23 +245,24 @@ export default {
     };
   },
   methods: {
-    loadData() {
+    async loadData() {
       // 若没有token封装到请求头中,请求必然失败
       let token = sessionStorage.getItem('token');
       this.$http.defaults.headers.common['Authorization'] = token;
-      this.$http
-        .get(`users?pagenum=1&pagesize=7`)
-        .then(response => {
-          const {msg, status} = response.data.meta;
-          if (status === 200) {
-            this.tableData = response.data.data.users;
-          } else {
-            this.$message.error(msg);
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      // 获取表格数据并填充
+      const response = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+      const {msg, status} = response.data.meta;
+      const {total} = response.data.data;
+      // 接口文档有误,应为total
+      console.log(total);
+      if (status === 200) {
+        this.tableData = response.data.data.users;
+        // 用户信息总条数
+        this.total = total;
+      } else {
+        this.$message.error(msg);
+      }
+      // 
     },
     // 查询功能,查询的是username
     handelQuery() {
@@ -426,10 +432,21 @@ export default {
       this.currentRoleId = rid;
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // 当不在第一页时,点击当前显示页数,回车时,应跳转到第一页
+      if(this.pagenum !== 1) {
+        this.pagenum = 1;
+      }
+      // 此处的val对应的是page-sizes中的值
+      // console.log(`每页 ${val} 条`);
+      this.pagesize = val - 0;
+      this.loadData();
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // 此处的val对应的是current-page的值
+      // console.log(`当前页: ${val}`);
+      // val是字符串,pagenum需要的是数字
+      this.pagenum = val - 0;
+      this.loadData();
     }
   },
   // beforeCreate() {
