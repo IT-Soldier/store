@@ -37,6 +37,7 @@ MyHttp.install = function (Vue) {
     loadingInstance.close();
     // 响应拦截,处理请求失败后的提示信息,防止反复判断
     const {msg, status} = response.data.meta;
+    // 201是推送数据成功的标志符,200是其他成功
     if(status === 200 || status === 201) {
       // 响应成功,此处不做处理
     } else {

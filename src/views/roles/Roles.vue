@@ -54,13 +54,7 @@ export default {
   methods: {
     async loadData() {
       const response = await this.$http.get('roles');
-      console.log(response.data);
-      const {msg, status} = response.data.meta;
-      if(status === 200) {
-        this.tableData = response.data.data;
-      } else {
-        this.$message.error(msg);
-      }
+      this.tableData = response.data.data;
     }
   },
   mounted() {

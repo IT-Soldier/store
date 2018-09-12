@@ -251,33 +251,23 @@ export default {
   methods: {
     // 加载用户信息
     async loadData() {
-      // 若没有token封装到请求头中,请求必然失败
-      let token = sessionStorage.getItem('token');
-      this.$http.defaults.headers.common['Authorization'] = token;
       // 获取表格数据并填充
       const response = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
-      const {msg, status} = response.data.meta;
-      const {total} = response.data.data;
-      // 接口文档有误,应为total
-      if (status === 200) {
         // response.data.data.users是当前this.pagenum页数对应的数据集合,也就是this.tableData中的东西
         this.tableData = response.data.data.users;
         // 用户信息总条数
-        this.total = total;
-      } else {
-        this.$message.error(msg);
-      }
+        this.total = response.data.data.total;
     },
     // 查询功能,查询的是username
     handelQuery() {
-      // 若没有token封装到请求头中,请求必然失败
-      let token = sessionStorage.getItem('token');
-      this.$http.defaults.headers.common['Authorization'] = token;
       this.$http
-        .get(`users?pagenum=1&pagesize=5&query=${this.query}`)
+        .get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.query}`)
         .then(response => {
           const {msg, status} = response.data.meta;
           if (status === 200) {
+            console.log(response.data);
+            this.total = response.data.data.total;
+            this.pagenum = response.data.data.pagenum;
             this.tableData = response.data.data.users;
           } else {
             this.$message.error(msg);
@@ -294,9 +284,6 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 若没有token封装到请求头中,请求必然失败
-        let token = sessionStorage.getItem('token');
-        this.$http.defaults.headers.common['Authorization'] = token;
         this.$http
           .delete(`users/${id}`)
           .then(response => {
@@ -370,8 +357,6 @@ export default {
         email: this.formData.email,
         mobile: this.formData.mobile
       });
-      const {msg, status} = response.data.meta;
-      if (status === 200) {
         this.dialogEditFormVisible = false;
         // 重新加载数据,刷新页面
         this.loadData();
@@ -380,9 +365,6 @@ export default {
         //   this.formData[key] = '';
         // }
         this.$message.success('添加成功');
-      } else {
-        this.$message.error(msg);
-      }
     },
     // 角色分配功能
     async handelRole() {
@@ -390,14 +372,9 @@ export default {
       const response = await this.$http.put(`users/${this.formData.id}/role`, {
         rid: this.currentRoleId
       });
-      const {msg, status} = response.data.meta;
-      if (status === 200) {
         this.$message.success('角色分配成功');
         this.dialogRoleFormVisible = false;
         this.loadData();
-      } else {
-        this.$message.error(msg);
-      }
     },
     // 取消按钮,关闭弹出框
     quitDialog() {
@@ -420,7 +397,7 @@ export default {
       }
     },
     // 打开编辑弹出框,并将数据渲染到页面上去
-    async openEditDialogForm(row) {
+    openEditDialogForm(row) {
       // row中已经有了表单所需的信息,不需要再次发请求拿数据
       this.dialogEditFormVisible = true;
       this.formData.username = row.username;
@@ -438,7 +415,6 @@ export default {
       // 去拿到所有的角色分类,下拉列表中遍历
       this.options = response.data.data;
       const response_rid = await this.$http.get(`users/${row.id}`);
-      const {msg, status} = response_rid.data.meta;
       const {rid} = response_rid.data.data;
       // 根据用户id去获取对应的角色id,去选中角色名称
       this.currentRoleId = rid;
@@ -465,12 +441,7 @@ export default {
     // 修改用户状态功能
     async stateChange(row) {
       const response = await this.$http.put(`users/${row.id}/state/${row.mg_state}`);
-      const {msg, status} = response.data.meta;
-      if (status === 200) {
         this.$message.success('用户状态修改成功!');
-      } else {
-        this.$message.error(msg);
-      }
     }
   },
   // beforeCreate() {
