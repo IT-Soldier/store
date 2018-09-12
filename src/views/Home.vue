@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       option: []
-    }
+    };
   },
   methods: {
     logout() {
@@ -85,9 +85,8 @@ export default {
     },
     async loadData() {
       const response = await this.$http.get('menus');
-      console.log(response.data.data);
       this.option = response.data.data;
-      console.log(this.option);
+      // console.log(response);
     }
   },
   beforeCreate() {
@@ -96,9 +95,12 @@ export default {
     if (!token) {
     // 仅仅验证了token是否存在,若有token,即使不正确也可以看到Home页面,但是无数据渲染,
     // 前端的验证强度已经足够
+    // 当页面刷新时没有token就会跳转到登录页
       this.$router.push('/login');
       this.$message.warning('请登录后访问页面!');
+      return;
     }
+    this.$http.defaults.headers.common['Authorization'] = token;
   },
   mounted() {
     this.loadData();

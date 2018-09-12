@@ -1,7 +1,7 @@
 <template>
   <el-card
   class="box-card"
-   shadow="hover">
+  shadow="hover">
       <!-- 相当于link-to标签,路由中的跳转 -->
     <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/Home' }">首页</el-breadcrumb-item>
@@ -260,13 +260,13 @@ export default {
       const {total} = response.data.data;
       // 接口文档有误,应为total
       if (status === 200) {
+        // response.data.data.users是当前this.pagenum页数对应的数据集合,也就是this.tableData中的东西
         this.tableData = response.data.data.users;
         // 用户信息总条数
         this.total = total;
       } else {
         this.$message.error(msg);
       }
-      // 
     },
     // 查询功能,查询的是username
     handelQuery() {
@@ -300,8 +300,17 @@ export default {
         this.$http
           .delete(`users/${id}`)
           .then(response => {
+            // console.log(response.data);
             const {msg, status} = response.data.meta;
             if (status === 200) {
+              // 如果最后一页只有1条数据,此时删除,则this.pagenum应减一,再刷新页面
+              if (this.total % this.pagesize === 1) {
+                this.pagenum--;
+              }
+              // 第二种手段 this.tableData当前页数据集合
+              // if (this.pagenum > 1 && this.tableData.length === 1) {
+              // this.pagenum--;
+              // }
               this.$message.success('删除成功');
               // 重新加载数据
               this.loadData();
@@ -328,42 +337,41 @@ export default {
       // 若不传入回调函数，则会返回一个 promise
       // 因为它封装了promise对象,取值方式相同,valid经过检验是验证之后返回的布尔值
       // console.log(valid);
-      if (!valid) {
-        return;
-      }
-      this.$http
-        .post(`users`,this.formData)
-        .then(response => {
-          const {msg, status} = response.data.meta;
-          // 用post时相对比较特殊,标识码是201
-          if(status === 201) {
+        if (!valid) {
+          return;
+        }
+        this.$http
+          .post(`users`, this.formData)
+          .then(response => {
+            const {msg, status} = response.data.meta;
+            // 用post时相对比较特殊,标识码是201
+            if (status === 201) {
             // 添加成功关闭弹出框
-            this.dialogAddFormVisible = false;
-            // 重新加载数据,刷新页面
-            this.loadData();
-            // 清空文本框
-            for(let key in this.formData) {
-              this.formData[key] = '';
+              this.dialogAddFormVisible = false;
+              // 重新加载数据,刷新页面
+              this.loadData();
+              // 清空文本框
+              for (let key in this.formData) {
+                this.formData[key] = '';
+              }
+              this.$message.success('添加成功');
+            } else {
+              this.$message.error(msg);
             }
-            this.$message.success('添加成功');
-          } else {
-            this.$message.error(msg);
-          }
-        })
-        .catch(error => {
-          this.$message.error(error);
-        })
+          })
+          .catch(error => {
+            this.$message.error(error);
+          });
       });
     },
     // 编辑功能
     async handelEdit() {
-
-      const response = await this.$http.put(`users/${this.formData.id}`,{
+      const response = await this.$http.put(`users/${this.formData.id}`, {
         email: this.formData.email,
         mobile: this.formData.mobile
       });
       const {msg, status} = response.data.meta;
-      if(status === 200) {
+      if (status === 200) {
         this.dialogEditFormVisible = false;
         // 重新加载数据,刷新页面
         this.loadData();
@@ -379,11 +387,11 @@ export default {
     // 角色分配功能
     async handelRole() {
       // 当选中option的value发生变化时,currentRoleId也会随之改变
-      const response = await this.$http.put(`users/${this.formData.id}/role`,{
+      const response = await this.$http.put(`users/${this.formData.id}/role`, {
         rid: this.currentRoleId
-      })
+      });
       const {msg, status} = response.data.meta;
-      if(status === 200) {
+      if (status === 200) {
         this.$message.success('角色分配成功');
         this.dialogRoleFormVisible = false;
         this.loadData();
@@ -400,14 +408,14 @@ export default {
       // 关闭角色分配弹出框
       this.dialogRoleFormVisible = false;
       // 清空表单
-      for(let key in this.formData) {
+      for (let key in this.formData) {
         this.formData[key] = '';
       }
     },
     // 叉号关闭弹出框
     closeDialog() {
-       // 清空表单
-      for(let key in this.formData) {
+      // 清空表单
+      for (let key in this.formData) {
         this.formData[key] = '';
       }
     },
@@ -438,7 +446,7 @@ export default {
     // pagesize变化时触发事件
     handleSizeChange(val) {
       // 当不在第一页时,点击当前显示页数,回车时,应跳转到第一页
-      if(this.pagenum !== 1) {
+      if (this.pagenum !== 1) {
         this.pagenum = 1;
       }
       // 此处的val对应的是page-sizes中的值
@@ -458,7 +466,7 @@ export default {
     async stateChange(row) {
       const response = await this.$http.put(`users/${row.id}/state/${row.mg_state}`);
       const {msg, status} = response.data.meta;
-      if(status === 200) {
+      if (status === 200) {
         this.$message.success('用户状态修改成功!');
       } else {
         this.$message.error(msg);
